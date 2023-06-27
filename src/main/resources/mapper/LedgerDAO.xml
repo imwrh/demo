@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--mybatis-3-mapper.dtd:约束文件的名称，限制和检查在当前文件中出现的标签和属性符合mybatis的要求-->
+<!--namespace：命名空间，要有唯一的值，要求使用dao接口的权限定名称（一个dao接口对应一个mapper，namespace指明对应哪个dao接口）-->
+<mapper namespace="com.example.demo.dao.LedgerDAO">
+    <update id="performStockOut" parameterType="int">
+        UPDATE ledger
+        SET num = num - #{num}
+        WHERE id = #{productId}
+          AND store_id = #{storeId}
+
+    </update>
+
+    <!-- 入库操作 -->
+    <update id="performStockIn" parameterType="int">
+        UPDATE ledger
+        SET num = num + #{num}
+        WHERE product_id = #{productId}
+          AND store_id = #{storeId}
+
+    </update>
+
+    <select id="selectByProductIdAndStoreId" parameterType="int" resultType="int">
+        select num from ledger
+        where product_id = #{productId}
+        AND store_id = #{storeId}
+    </select>
+
+    <select id="getLedgerByCriteria"  resultType="com.example.demo.entity.Ledger">
+        SELECT *
+        FROM ledger
+        WHERE 1=1
+        <if test="productId != null">
+            AND product_id = #{productId}
+        </if>
+        <if test="startDate != null">
+            AND newday >= #{startDate}
+        </if>
+        ORDER BY newday DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+    <select id="selectSumByProductI" resultType="java.lang.Integer">
+        SELECT SUM(num) AS totalNum
+        FROM ledger
+        WHERE product_id = #{productId}
+        GROUP BY product_id
+    </select>
+    <select id="getLedgerCountByCriteria" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS total
+        FROM ledger
+        WHERE product_id = #{productId}
+          AND start_date >= #{startDate}
+    </select>
+
+
+    <!-- 所有的数据库操作都要写在mapper标签中，可以使用特定的标签表示数据库中的特定操作 -->
+</mapper>

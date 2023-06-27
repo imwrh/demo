@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 指明对应的 DAO 接口 -->
+<mapper namespace="com.example.demo.dao.ProductDAO">
+    <!-- 新增商品 -->
+    <insert id="addProduct" parameterType="com.example.demo.entity.Product">
+        INSERT INTO product (name, specification, price)
+        VALUES (#{name}, #{specification}, #{price})
+    </insert>
+
+    <!-- 更新商品 -->
+    <update id="updateProduct" parameterType="com.example.demo.entity.Product">
+        UPDATE product
+        SET name = #{name}, specification = #{specification}, price = #{price}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除商品 -->
+    <delete id="deleteProduct" parameterType="int">
+        DELETE FROM product
+        WHERE id = #{productId}
+    </delete>
+
+    <!-- 分页查询商品 -->
+    <select id="getProducts"  resultType="com.example.demo.entity.Product">
+        SELECT *
+        FROM product
+        WHERE name LIKE CONCAT('%', #{productName}, '%')
+        ORDER BY entry_date DESC
+            LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 查询商品总数 -->
+    <select id="getTotalProducts" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM product
+        WHERE name LIKE CONCAT('%', #{productName}, '%')
+    </select>
+
+    <!-- 根据商品ID查询商品 -->
+    <select id="getProductById" parameterType="int" resultType="com.example.demo.entity.Product">
+        SELECT *
+        FROM product
+        WHERE id = #{productId}
+    </select>
+
+    <select id="selectByName" parameterType="String" resultType="int">
+        select id from product
+    where name = #{name}
+    </select>
+
+</mapper>
